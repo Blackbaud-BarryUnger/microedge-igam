@@ -117,34 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CFS_ConfigNotFound" xml:space="preserve">
-    <value>The client's configuration file was not found on the GrantMaker server.</value>
-  </data>
-  <data name="CFS_InvalidValidationKey" xml:space="preserve">
-    <value>An invalid Validation Key was specified in the Payload.</value>
-  </data>
-  <data name="CFS_MissingCFSDirectory" xml:space="preserve">
-    <value>The CFS directory structure for this client does not exist.</value>
-  </data>
-  <data name="CFS_MissingCheckSum" xml:space="preserve">
-    <value>Payload is missing the Validation Key.</value>
-  </data>
-  <data name="CFS_MissingSerialNumber" xml:space="preserve">
-    <value>Payload is missing the client's Serial Number.</value>
-  </data>
-  <data name="CFS_NotConfigured" xml:space="preserve">
-    <value>You are not currently configured for the Internet Grants Application Manager.</value>
-  </data>
-  <data name="CFS_WrongSerialNumber" xml:space="preserve">
-    <value>The wrong Serial Number was specified in the Payload.</value>
-  </data>
   <data name="CreateApplicant_INVALID_EMAIL" xml:space="preserve">
     <value>The applicant's email address does not satisfy email construction requirements.</value>
   </data>
   <data name="CreateApplicant_MISSING_EMAIL_PASSWORD" xml:space="preserve">
     <value>Unable to create an Applicant. The Applicant's Email or Password were not specified.</value>
-  </data>
-  <data name="InvalidPayload" xml:space="preserve">
-    <value>Invalid payload.</value>
   </data>
 </root>

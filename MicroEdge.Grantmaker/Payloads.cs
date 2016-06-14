@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using MicroEdge.Igam.Business;
 
-namespace MicroEdge.Grantmaker.Business
+namespace MicroEdge.Grantmaker
 {
     public class Payloads : List<Payload>
     {

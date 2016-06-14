@@ -1,9 +1,8 @@
-﻿using System;
-using FluentAssertions;
-using MicroEdge.Grantmaker.Business;
+﻿using FluentAssertions;
+using MicroEdge.Grantmaker;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Test.Grantmaker.Business
+namespace Test.Grantmaker
 {
     [TestClass]
     public class CFSTest
@@ -19,13 +18,13 @@ namespace Test.Grantmaker.Business
             target.CommandType.Should().Be(Payload.CommandTypes.Error);
             target[Payload.ParameterKeys.ErrorCode].Should().Be(CFS.AuthenticateResponseTypes.AuthenticationError);
             target[Payload.ParameterKeys.ErrorLocation].Should()
-                .Be(MicroEdge.Grantmaker.Business.Properties.Errors.CFS_MissingSerialNumber);
+                .Be(MicroEdge.Grantmaker.Properties.Errors.CFS_MissingSerialNumber);
 
             target = cfs.Authenticate("123", string.Empty, "checksum");
             target.CommandType.Should().Be(Payload.CommandTypes.Error);
             target[Payload.ParameterKeys.ErrorCode].Should().Be(CFS.AuthenticateResponseTypes.AuthenticationError);
             target[Payload.ParameterKeys.ErrorLocation].Should()
-                .Be(MicroEdge.Grantmaker.Business.Properties.Errors.CFS_MissingSerialNumber);
+                .Be(MicroEdge.Grantmaker.Properties.Errors.CFS_MissingSerialNumber);
         }
 
         /// <summary>
@@ -39,13 +38,13 @@ namespace Test.Grantmaker.Business
             target.CommandType.Should().Be(Payload.CommandTypes.Error);
             target[Payload.ParameterKeys.ErrorCode].Should().Be(CFS.AuthenticateResponseTypes.AuthenticationError);
             target[Payload.ParameterKeys.ErrorLocation].Should()
-                .Be(MicroEdge.Grantmaker.Business.Properties.Errors.CFS_MissingCheckSum);
+                .Be(MicroEdge.Grantmaker.Properties.Errors.CFS_MissingCheckSum);
 
             target = cfs.Authenticate("123", "12345", string.Empty);
             target.CommandType.Should().Be(Payload.CommandTypes.Error);
             target[Payload.ParameterKeys.ErrorCode].Should().Be(CFS.AuthenticateResponseTypes.AuthenticationError);
             target[Payload.ParameterKeys.ErrorLocation].Should()
-                .Be(MicroEdge.Grantmaker.Business.Properties.Errors.CFS_MissingCheckSum);
+                .Be(MicroEdge.Grantmaker.Properties.Errors.CFS_MissingCheckSum);
         }
     }
 }

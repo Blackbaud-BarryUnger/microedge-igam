@@ -2,7 +2,7 @@
 using System.Xml.Linq;
 using MicroEdge.Igam.Business;
 
-namespace MicroEdge.Grantmaker.Business
+namespace MicroEdge.Grantmaker
 {
     public class Payload
     {

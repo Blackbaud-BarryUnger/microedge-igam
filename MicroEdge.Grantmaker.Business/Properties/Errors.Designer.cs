@@ -61,69 +61,6 @@ namespace MicroEdge.Grantmaker.Business.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The client&apos;s configuration file was not found on the GrantMaker server..
-        /// </summary>
-        internal static string CFS_ConfigNotFound {
-            get {
-                return ResourceManager.GetString("CFS_ConfigNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An invalid Validation Key was specified in the Payload..
-        /// </summary>
-        internal static string CFS_InvalidValidationKey {
-            get {
-                return ResourceManager.GetString("CFS_InvalidValidationKey", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The CFS directory structure for this client does not exist..
-        /// </summary>
-        internal static string CFS_MissingCFSDirectory {
-            get {
-                return ResourceManager.GetString("CFS_MissingCFSDirectory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Payload is missing the Validation Key..
-        /// </summary>
-        internal static string CFS_MissingCheckSum {
-            get {
-                return ResourceManager.GetString("CFS_MissingCheckSum", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Payload is missing the client&apos;s Serial Number..
-        /// </summary>
-        internal static string CFS_MissingSerialNumber {
-            get {
-                return ResourceManager.GetString("CFS_MissingSerialNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You are not currently configured for the Internet Grants Application Manager..
-        /// </summary>
-        internal static string CFS_NotConfigured {
-            get {
-                return ResourceManager.GetString("CFS_NotConfigured", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The wrong Serial Number was specified in the Payload..
-        /// </summary>
-        internal static string CFS_WrongSerialNumber {
-            get {
-                return ResourceManager.GetString("CFS_WrongSerialNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The applicant&apos;s email address does not satisfy email construction requirements..
         /// </summary>
         internal static string CreateApplicant_INVALID_EMAIL {
@@ -138,15 +75,6 @@ namespace MicroEdge.Grantmaker.Business.Properties {
         internal static string CreateApplicant_MISSING_EMAIL_PASSWORD {
             get {
                 return ResourceManager.GetString("CreateApplicant_MISSING_EMAIL_PASSWORD", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid payload..
-        /// </summary>
-        internal static string InvalidPayload {
-            get {
-                return ResourceManager.GetString("InvalidPayload", resourceCulture);
             }
         }
     }

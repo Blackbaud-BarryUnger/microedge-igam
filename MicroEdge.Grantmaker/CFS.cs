@@ -1,10 +1,9 @@
 ﻿using System.IO;
+using MicroEdge.Grantmaker.Business;
 using MicroEdge.Igam.Business;
-using MicroEdge.Logging;
 
-namespace MicroEdge.Grantmaker.Business
+namespace MicroEdge.Grantmaker
 {
-    [EnterExitMethodLogging]
     public class CFS
     {
         public static class AuthenticateResponseTypes

@@ -95,7 +95,6 @@
     <Compile Include="ActionResultBase.cs" />
     <Compile Include="ApplicantActions\ApplicantActions.cs" />
     <Compile Include="ApplicationActions\ApplicationActions.cs" />
-    <Compile Include="CFS.cs" />
     <Compile Include="ApplicantActions\CreateApplicantResult.cs" />
     <Compile Include="FormActions\FormActions.cs" />
     <Compile Include="MiscellaneousActions\MiscellaneousActions.cs" />
@@ -104,8 +103,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Errors.resx</DependentUpon>
     </Compile>
-    <Compile Include="Payload.cs" />
-    <Compile Include="Payloads.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -61,7 +61,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ApplicantActionsTest.cs" />
-    <Compile Include="CFSTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
