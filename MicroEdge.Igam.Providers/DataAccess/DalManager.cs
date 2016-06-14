@@ -1,4 +1,4 @@
-namespace MicroEdge.Provider.Dal
+namespace MicroEdge.Igam.Providers.Dal
 {
 	/// <summary>
 	/// DalManager manages access to the Data Access Layer by leveraging a DalProvider 
@@ -54,21 +54,6 @@ namespace MicroEdge.Provider.Dal
         {
             _provider = provider;
         }
-
-        /// <summary>
-        /// Initialize the data connection.
-        /// </summary>
-        /// <param name="parameters">
-        /// Any parameters needed to initialize the connection.
-        /// </param>
-        public static void Initialize(object parameters)
-		{
-			Provider.Initialize(parameters);
-		}
-		public static void Initialize()
-		{
-			Provider.Initialize();
-		}
 
 		/// <summary>
 		/// Instantiate a DAL object given the type of the object.

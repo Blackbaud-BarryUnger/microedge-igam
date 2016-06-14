@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MicroEdge.Provider.Dal
+namespace MicroEdge.Igam.Providers.Dal
 {
 	/// <summary>
 	/// Interface that any TransactionScope used by a DAL provider must implement.

@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Web;
 using MicroEdge.Igam.Business.Logging;
 using MicroEdge.Igam.Providers.Logging;
-using MicroEdge.Provider.Dal;
+using MicroEdge.Igam.Providers.Dal;
 
 namespace MicroEdge.Grantmaker
 {

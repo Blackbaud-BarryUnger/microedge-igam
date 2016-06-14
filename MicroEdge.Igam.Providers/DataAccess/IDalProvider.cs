@@ -1,4 +1,4 @@
-namespace MicroEdge.Provider.Dal
+namespace MicroEdge.Igam.Providers.Dal
 {
 	/// <summary>
 	/// Interface that any DAL provider used by the DAL manager must implement.

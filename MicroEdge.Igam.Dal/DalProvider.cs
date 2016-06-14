@@ -1,6 +1,6 @@
 ﻿using System;
 using MicroEdge.Igam.Business.DataAccess;
-using MicroEdge.Provider.Dal;
+using MicroEdge.Igam.Providers.Dal;
 
 namespace MicroEdge.Igam.Dal
 {

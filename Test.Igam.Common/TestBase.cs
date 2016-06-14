@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using MicroEdge.Provider.Dal;
+using MicroEdge.Igam.Providers.Dal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Test.Igam.Common

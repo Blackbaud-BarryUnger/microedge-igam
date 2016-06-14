@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MicroEdge.Provider.Dal
+namespace MicroEdge.Igam.Providers.Dal
 {
 	/// <summary>
 	/// This is the class that is returned by the DalProvider's GetTransactionScope method when the DalProvider doesn't 

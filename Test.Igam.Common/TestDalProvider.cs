@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MicroEdge.Igam.Business.DataAccess;
-using MicroEdge.Provider.Dal;
+using MicroEdge.Igam.Providers.Dal;
 
 namespace Test.Igam.Common
 {

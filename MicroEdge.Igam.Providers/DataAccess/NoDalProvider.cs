@@ -1,4 +1,4 @@
-﻿namespace MicroEdge.Provider.Dal
+﻿namespace MicroEdge.Igam.Providers.Dal
 {
 	/// <summary>
 	/// This is the class that is used for the DalProvider when there is no dal provider setup in the 

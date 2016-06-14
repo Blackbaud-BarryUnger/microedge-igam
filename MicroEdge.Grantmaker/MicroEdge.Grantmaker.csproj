@@ -137,6 +137,10 @@
       <Project>{8211adc7-a0ea-4b31-b9e0-b023858bb71b}</Project>
       <Name>MicroEdge.Igam.Providers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MicroEdge.Tools\MicroEdge.Igam.Tools.csproj">
+      <Project>{b9046b74-a6c9-4dc2-870b-e62b2ed4ecd8}</Project>
+      <Name>MicroEdge.Igam.Tools</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

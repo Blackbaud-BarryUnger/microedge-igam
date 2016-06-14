@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cache\CacheManager.cs" />
+    <Compile Include="Cache\ICacheProvider.cs" />
     <Compile Include="DataAccess\DalManager.cs" />
     <Compile Include="DataAccess\IDalProvider.cs" />
     <Compile Include="DataAccess\ITransactionScope.cs" />

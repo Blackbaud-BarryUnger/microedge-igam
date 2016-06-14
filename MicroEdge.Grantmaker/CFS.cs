@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using MicroEdge.Grantmaker.Business;
+using MicroEdge.Grantmaker.Properties;
 using MicroEdge.Igam.Business;
 
 namespace MicroEdge.Grantmaker
@@ -14,6 +14,7 @@ namespace MicroEdge.Grantmaker
 
         public virtual Payload Authenticate(string siteId, string serialNumber, string checkSum)
         {
+            const char fieldMarker = (char)255;
             const string globalResourcesPath = "GLOBAL_RESOURCES";
 
             bool configurationUpdateRequired = false;
@@ -21,10 +22,10 @@ namespace MicroEdge.Grantmaker
 
             // Ensure we have Serial Number and Check Sum.
             if (string.IsNullOrEmpty(serialNumber))
-                return Payload.CreateErrorPayload(AuthenticateResponseTypes.AuthenticationError, Properties.Errors.CFS_MissingSerialNumber);
+                return Payload.CreateErrorPayload(AuthenticateResponseTypes.AuthenticationError, Errors.CFS_MissingSerialNumber);
 
             if (string.IsNullOrEmpty(checkSum))
-                return Payload.CreateErrorPayload(AuthenticateResponseTypes.AuthenticationError, Properties.Errors.CFS_MissingCheckSum);
+                return Payload.CreateErrorPayload(AuthenticateResponseTypes.AuthenticationError, Errors.CFS_MissingCheckSum);
 
             Payload objPayloadOut = new Payload();
 
@@ -43,7 +44,7 @@ namespace MicroEdge.Grantmaker
                 //The client may have been disabled by MicroEdge.
                 ClientDb clientDb = new ClientDb(siteId);
                 if (!Directory.Exists(clientDb.Root))
-                    return Payload.CreateErrorPayload(AuthenticateResponseTypes.AuthenticationError, Properties.Errors.CFS_MissingCFSDirectory);
+                    return Payload.CreateErrorPayload(AuthenticateResponseTypes.AuthenticationError, Errors.CFS_MissingCFSDirectory);
 
                 // check if the config file exists.
                 string configPath = string.Concat(clientDb.Root, @"\", globalResourcesPath, @"\gifts.cfg");
@@ -51,15 +52,15 @@ namespace MicroEdge.Grantmaker
                 {
                     // Config file does not exist on SERVER. Config upload is required.
                     configurationUpdateRequired = true;
-                    invalidMsg = Properties.Errors.CFS_ConfigNotFound;
+                    invalidMsg = Errors.CFS_ConfigNotFound;
                 }
                 else
                 {
                     // Since the config file exists, read it.
-                    string[] configuration = File.ReadAllText(configPath).Split(Tools.FieldMarker);
+                    string[] configuration = File.ReadAllText(configPath).Split(fieldMarker);
                     // Make sure the Serial No matches.
                     if (configuration[3] != serialNumber)
-                        return Payload.CreateErrorPayload (AuthenticateResponseTypes.NoLicenseError, Properties.Errors.CFS_WrongSerialNumber);
+                        return Payload.CreateErrorPayload (AuthenticateResponseTypes.NoLicenseError, Errors.CFS_WrongSerialNumber);
 
                     //TODO - finish converting this
 
