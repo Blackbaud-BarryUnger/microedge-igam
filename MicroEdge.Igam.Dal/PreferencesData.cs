@@ -8,7 +8,7 @@ namespace MicroEdge.Igam.Dal
         #region Constants
 
         //Keys
-        private static class PreferenceKeys
+        public static class PreferenceKeys
         {
             public const string CfsRoot = "CFSRoot";
         }

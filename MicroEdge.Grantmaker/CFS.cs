@@ -6,19 +6,22 @@ namespace MicroEdge.Grantmaker
 {
     public class CFS
     {
+        public const string GiftsConfig = "gifts.cfg";
+        public const char FieldMarker = (char)255;
+
         public static class AuthenticateResponseTypes
         {
             public const string AuthenticationError = "AUTHENTICATION_ERROR";
             public const string NoLicenseError = "NO_IGAM_LICENSE";
         }
 
-        public virtual Payload Authenticate(string siteId, string serialNumber, string checkSum)
+        public virtual Payload Authenticate(string siteId, string serialNumber, string checkSum, bool isForConfigUpload)
         {
-            const char fieldMarker = (char)255;
             const string globalResourcesPath = "GLOBAL_RESOURCES";
 
+            ClientDb clientDb = null;
             bool configurationUpdateRequired = false;
-            string invalidMsg;
+            string invalidMsg = string.Empty;
 
             // Ensure we have Serial Number and Check Sum.
             if (string.IsNullOrEmpty(serialNumber))
@@ -42,12 +45,12 @@ namespace MicroEdge.Grantmaker
 
                 //If we have a site ID but the CFS directory structure for the site does not exist, this is an error.
                 //The client may have been disabled by MicroEdge.
-                ClientDb clientDb = new ClientDb(siteId);
+                clientDb = new ClientDb(siteId);
                 if (!Directory.Exists(clientDb.Root))
                     return Payload.CreateErrorPayload(AuthenticateResponseTypes.AuthenticationError, Errors.CFS_MissingCFSDirectory);
 
                 // check if the config file exists.
-                string configPath = string.Concat(clientDb.Root, @"\", globalResourcesPath, @"\gifts.cfg");
+                string configPath = string.Concat(clientDb.Root, @"\", globalResourcesPath, @"\", GiftsConfig);
                 if (!File.Exists(configPath))
                 {
                     // Config file does not exist on SERVER. Config upload is required.
@@ -57,38 +60,21 @@ namespace MicroEdge.Grantmaker
                 else
                 {
                     // Since the config file exists, read it.
-                    string[] configuration = File.ReadAllText(configPath).Split(fieldMarker);
+                    string[] configuration = File.ReadAllText(configPath).Split(FieldMarker);
                     // Make sure the Serial No matches.
                     if (configuration[3] != serialNumber)
                         return Payload.CreateErrorPayload (AuthenticateResponseTypes.NoLicenseError, Errors.CFS_WrongSerialNumber);
-
-                    //TODO - finish converting this
-
-                    //               If blnDebug Then ProgramTrace "CFS:Authenticate: 13"
-                    //               ' make sure that the check sum value matches the one in the config found in the CFS.
-                    //               If CheckSumValidate(checkSum, configuration[6]) = meSUCCESS Then
-                    //                  If blnDebug Then ProgramTrace "CFS:Authenticate: 14"
-                    //                  ' ok now we need to check for an appropriate LICENSE.
-                    //                  If ClientDB.ClientConfig.GrantApplicationManager Then
-                    //                     If blnDebug Then ProgramTrace "CFS:Authenticate: 15"
-                    //                     Authenticate = True
-                    //                  Else
-                    //                     objPayloadOut.CreateErrorPayload "NO_IGAM_LICENSE", "GRANTMAKER_SERVER", Properties.Errors.CFS_NotConfigured
-                    //                     If blnDebug Then ProgramTrace "CFS:Authenticate: 16"
-                    //                  End If
-                    //               Else
-                    //                  If blnDebug Then ProgramTrace "CFS:Authenticate: 17"
-                    //                  blnConfigUpload = True
-                    //                  strInvalidMsg = Properties.Errors.CFS_InvalidValidationKey
-                    //               End If
-                    //            Else
-                    //               If blnDebug Then ProgramTrace "CFS:Authenticate: 18"
-                    //               objPayloadOut
-                    //            End If
-                    //         Else
-                    //            If blnDebug Then ProgramTrace "CFS:Authenticate: 19"
-                    //            objPayloadOut.CreateErrorPayload "AUTHENTICATION_ERROR", "GRANTMAKER_SERVER", ErrorMsgGet(True, True)
-                    //         End If
+                    
+                    //See if the check sum matches
+                    if (!ChecksumValidate(checkSum, configuration[6]))
+                    {
+                        configurationUpdateRequired = true;
+                        invalidMsg = Errors.CFS_InvalidValidationKey;
+                    }
+                    else if (!HasIgam(Tools.ToInt64(configuration[0])))
+                    {
+                        return Payload.CreateErrorPayload(AuthenticateResponseTypes.NoLicenseError, Errors.CFS_NotConfigured);
+                    }
                 }
             }
 
@@ -96,54 +82,86 @@ namespace MicroEdge.Grantmaker
             if (configurationUpdateRequired)
             {
                 //TODO - finish converting this
+                if (!string.IsNullOrEmpty(siteId))
+                {
+                    if (clientDb == null)
+                        clientDb = new ClientDb(siteId);
 
-                //      If blnDebug Then ProgramTrace "CFS:Authenticate: 21"
-                //      If strSiteID <> "" Then
-                //         ClientDB.Initialize strSiteID
-                //         blnGateClosed = ClientDB.AdminSettings.GateClosed
-                //      End If
-
-
-                //      If blnDebug And Not ClientDB.AdminSettings Is Nothing Then
-                //         ProgramTrace "CFS:Authenticate: 22, contents of AdminSettings:" & ClientDB.AdminSettings.XML
-                //      End If
-
-
-                //      If Not blnGateClosed Then
-                //         ' ok Gate is open, indicate that a new CFG file is needed.
-                //         If UCase$(objPayloadIn.CommandType) = "CFS_FILE_UPDATE" Then
-                //            'Client is sending us the config file now. Make sure this is a GIFTS.CFG file. If so, consider
-                //            'the user authenticated.
-                //            If UCase$(objPayloadIn.Parameters.ChildValue("FILE_NAME")) = mstrGIFTS_CFG Then
-                //               Authenticate = True
-                //            Else
-                //               'This is not the initialize access payload, tell the user we need it now.
-                //               objPayloadOut.CommandType = "INITIALIZE_ACCESS"
-                //               objPayloadOut.Parameters.ChildValue("SID") = strSiteID
-                //            End If
-                //         Else
-                //            'This is not the initialize access payload, tell the user we need it now.
-                //            objPayloadOut.CommandType = "INITIALIZE_ACCESS"
-                //            objPayloadOut.Parameters.ChildValue("SID") = strSiteID
-                //         End If
-                //      Else
-                //         'Gate is NOT open, and invalid authentication data supplied.
-                //         objPayloadOut.CreateErrorPayload "AUTHENTICATION_ERROR", "GRANTMAKER_SERVER", strInvalidMsg
-                //      End If
+                    // If the Gate is not open to receiving a new config, then they are NOT authenticated
+                    if (clientDb.AdminSettings.GateIsClosed)
+                        return Payload.CreateErrorPayload(AuthenticateResponseTypes.AuthenticationError, invalidMsg);
+                }
+                
+                //If we're not authenticating the receipt of a config, response is that we need one
+                if (!isForConfigUpload)
+                {
+                    Payload response = new Payload { CommandType = Payload.CommandTypes.InitializeAccess};
+                    response.AddParameter(Payload.ParameterKeys.SiteId, siteId);
+                    return response;               
+                }
             }
 
+            // If we're here, we're authenticated.  If we still don't have a siteId, 
+            //we'll need to create a new account now for this serial number (i.e. bootstrap)
+            return string.IsNullOrEmpty(siteId) 
+                ? AccountCreate(serialNumber, siteId) 
+                : null;
+        }
 
-            //   'If authenticated and the user does not yet have a site ID, create one now along with the appropriate
-            //   'subdirectories.
-            //   If Authenticate And strSiteID = "" Then
-            //      If blnDebug Then ProgramTrace "CFS:Authenticate: 24"
-            //      If AccountCreate(strSerialNo, strSiteID) = meERROR_OCCURRED Then
-            //         If blnDebug Then ProgramTrace "CFS:Authenticate: 25"
-            //         objPayloadOut.CreateErrorPayload "ACCOUNT_CREATE", "GRANTMAKER_SERVER", ErrorMsgGet(True, True)
-            //      End If
-            //   End If
+        private static Payload AccountCreate(string serialNumber, string siteId)
+        {
+            try
+            {
+
+            }
+            catch (System.Exception ex)
+            {
+                return Payload.CreateErrorPayload("ACCOUNT_CREATE", ex.Message);
+            }
 
             return null;
+        }
+
+        /// <summary>
+        /// Does an equality check between two check sum strings (where source has
+        /// presumably pulled from a generated gifts.cfg file)
+        /// </summary>
+        /// <returns>
+        /// True if they effectively match, false if not
+        /// </returns>
+        private static bool ChecksumValidate(string target, string source)
+        {
+            //if target is blank/null, only a match if source is too
+            if (string.IsNullOrEmpty(target))
+                return string.IsNullOrEmpty(source);
+
+            //and vice versa
+            if (string.IsNullOrEmpty(source))
+                return string.IsNullOrEmpty(target);
+
+            //if source is longer, we'll chop off anything beyond the length of target
+            if (source.Length > target.Length)
+                source = source.Substring(0,target.Length);
+
+            //If they are identical, it's a match
+            if (source == target)
+                return true;
+
+            //They should both be decimals; split on the decimal
+            string[] sourceParts = source.Split('.');
+            string[] targetParts = target.Split('.');
+
+            //If the whole number value is different, not a match
+            if (sourceParts[0] != targetParts[0])
+                return false;
+
+            //We'll consider a match on first 9 decimal places
+            return sourceParts[0].Substring(0,9) ==  targetParts[1].Substring(0,9);
+        }
+
+        private static bool HasIgam(long configOptions)
+        {
+            return (configOptions & 128) > 0;
         }
     }
 }

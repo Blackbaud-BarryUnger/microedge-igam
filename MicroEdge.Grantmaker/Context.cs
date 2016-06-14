@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Web;
 using MicroEdge.Grantmaker.Business;
@@ -109,8 +110,11 @@ namespace MicroEdge.Grantmaker
             if (!requestPayloads.ContainsAuthentication)
                 return false;
 
+            //Run the details of the request through CFS to see if it can proceed to processing
+            bool isConfigUpload = requestPayloads[0].CommandType == Payload.CommandTypes.CfsFileUpdate &&
+                requestPayloads[0][Payload.ParameterKeys.FileName].Equals(CFS.GiftsConfig, StringComparison.InvariantCultureIgnoreCase);
             CFS cfs = new CFS();
-            Payload authenticationPayload = cfs.Authenticate(requestPayloads.SiteId, requestPayloads.SerialNumber, requestPayloads.CheckSum);
+            Payload authenticationPayload = cfs.Authenticate(requestPayloads.SiteId, requestPayloads.SerialNumber, requestPayloads.CheckSum, isConfigUpload);
             if (authenticationPayload == null)
                 return true;
 

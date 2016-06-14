@@ -12,10 +12,12 @@ namespace MicroEdge.Grantmaker
         
         public static class CommandTypes
         {
+            public const string CfsFileUpdate = "CFS_FILE_UPDATE";
             public const string CreateApplicant = "APPLICANT_CREATE";
             public const string CreateApplicantError = "APPLICANT_CREATE_ERROR";
             public const string CreateApplicantSuccess = "APPLICANT_CREATE_SUCCESS";
             public const string Error = "ERROR";
+            public const string InitializeAccess = "INITIALIZE_ACCESS";
             public const string SidConfirmed = "SID_CONFIRMED";
         }
 
@@ -26,6 +28,7 @@ namespace MicroEdge.Grantmaker
             public const string Email = "EMAIL";
             public const string ErrorCode = "ERROR_CODE";
             public const string ErrorLocation = "ERROR_LOCATION";
+            public const string FileName = "FILE_NAME";
             public const string Password = "PASSWORD";
             public const string SiteId = "SID";
         }

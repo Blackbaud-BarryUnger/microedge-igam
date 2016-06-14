@@ -48,6 +48,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -81,6 +82,10 @@
     <ProjectReference Include="..\MicroEdge.Igam.Business\MicroEdge.Igam.Business.csproj">
       <Project>{31ea6a06-82a2-4e57-bad3-263b88f4e047}</Project>
       <Name>MicroEdge.Igam.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MicroEdge.Igam.Dal\MicroEdge.Igam.Dal.csproj">
+      <Project>{7377c7b8-d301-473a-9bd4-2e2b24202149}</Project>
+      <Name>MicroEdge.Igam.Dal</Name>
     </ProjectReference>
     <ProjectReference Include="..\MicroEdge.Igam.Tools\MicroEdge.Igam.Tools.csproj">
       <Project>{b9046b74-a6c9-4dc2-870b-e62b2ed4ecd8}</Project>

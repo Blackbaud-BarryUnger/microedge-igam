@@ -94,6 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminSettings.cs" />
     <Compile Include="Applicant.cs" />
     <Compile Include="BusinessBase.cs" />
     <Compile Include="ClientDb.cs" />

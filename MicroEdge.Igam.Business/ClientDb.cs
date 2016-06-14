@@ -14,11 +14,14 @@ namespace MicroEdge.Igam.Business
 
             Root = string.Format(rootFormat, Preferences.Current.CFSRoot, siteId);
             SiteId = siteId;
+            AdminSettings = new AdminSettings();
         }
 
         #endregion Constructors
 
         #region Properties
+
+        public AdminSettings AdminSettings { get; private set; }
 
         public string SiteId { get; private set; }
 
