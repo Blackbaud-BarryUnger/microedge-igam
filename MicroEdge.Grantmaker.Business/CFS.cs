@@ -22,10 +22,10 @@ namespace MicroEdge.Grantmaker.Business
 
             // Ensure we have Serial Number and Check Sum.
             if (string.IsNullOrEmpty(serialNumber))
-                return Payload.ErrorSave(AuthenticateResponseTypes.AuthenticationError, Properties.Errors.CFS_MissingSerialNumber);
+                return Payload.CreateErrorPayload(AuthenticateResponseTypes.AuthenticationError, Properties.Errors.CFS_MissingSerialNumber);
 
             if (string.IsNullOrEmpty(checkSum))
-                return Payload.ErrorSave(AuthenticateResponseTypes.AuthenticationError, Properties.Errors.CFS_MissingCheckSum);
+                return Payload.CreateErrorPayload(AuthenticateResponseTypes.AuthenticationError, Properties.Errors.CFS_MissingCheckSum);
 
             Payload objPayloadOut = new Payload();
 
@@ -44,7 +44,7 @@ namespace MicroEdge.Grantmaker.Business
                 //The client may have been disabled by MicroEdge.
                 ClientDb clientDb = new ClientDb(siteId);
                 if (!Directory.Exists(clientDb.Root))
-                    return Payload.ErrorSave(AuthenticateResponseTypes.AuthenticationError, Properties.Errors.CFS_MissingCFSDirectory);
+                    return Payload.CreateErrorPayload(AuthenticateResponseTypes.AuthenticationError, Properties.Errors.CFS_MissingCFSDirectory);
 
                 // check if the config file exists.
                 string configPath = string.Concat(clientDb.Root, @"\", globalResourcesPath, @"\gifts.cfg");
@@ -60,7 +60,7 @@ namespace MicroEdge.Grantmaker.Business
                     string[] configuration = File.ReadAllText(configPath).Split(Tools.FieldMarker);
                     // Make sure the Serial No matches.
                     if (configuration[3] != serialNumber)
-                        return Payload.ErrorSave (AuthenticateResponseTypes.NoLicenseError, Properties.Errors.CFS_WrongSerialNumber);
+                        return Payload.CreateErrorPayload (AuthenticateResponseTypes.NoLicenseError, Properties.Errors.CFS_WrongSerialNumber);
 
                     //TODO - finish converting this
 
@@ -73,7 +73,7 @@ namespace MicroEdge.Grantmaker.Business
                     //                     If blnDebug Then ProgramTrace "CFS:Authenticate: 15"
                     //                     Authenticate = True
                     //                  Else
-                    //                     objPayloadOut.ErrorSave "NO_IGAM_LICENSE", "GRANTMAKER_SERVER", Properties.Errors.CFS_NotConfigured
+                    //                     objPayloadOut.CreateErrorPayload "NO_IGAM_LICENSE", "GRANTMAKER_SERVER", Properties.Errors.CFS_NotConfigured
                     //                     If blnDebug Then ProgramTrace "CFS:Authenticate: 16"
                     //                  End If
                     //               Else
@@ -87,7 +87,7 @@ namespace MicroEdge.Grantmaker.Business
                     //            End If
                     //         Else
                     //            If blnDebug Then ProgramTrace "CFS:Authenticate: 19"
-                    //            objPayloadOut.ErrorSave "AUTHENTICATION_ERROR", "GRANTMAKER_SERVER", ErrorMsgGet(True, True)
+                    //            objPayloadOut.CreateErrorPayload "AUTHENTICATION_ERROR", "GRANTMAKER_SERVER", ErrorMsgGet(True, True)
                     //         End If
                 }
             }
@@ -128,7 +128,7 @@ namespace MicroEdge.Grantmaker.Business
                 //         End If
                 //      Else
                 //         'Gate is NOT open, and invalid authentication data supplied.
-                //         objPayloadOut.ErrorSave "AUTHENTICATION_ERROR", "GRANTMAKER_SERVER", strInvalidMsg
+                //         objPayloadOut.CreateErrorPayload "AUTHENTICATION_ERROR", "GRANTMAKER_SERVER", strInvalidMsg
                 //      End If
             }
 
@@ -139,7 +139,7 @@ namespace MicroEdge.Grantmaker.Business
             //      If blnDebug Then ProgramTrace "CFS:Authenticate: 24"
             //      If AccountCreate(strSerialNo, strSiteID) = meERROR_OCCURRED Then
             //         If blnDebug Then ProgramTrace "CFS:Authenticate: 25"
-            //         objPayloadOut.ErrorSave "ACCOUNT_CREATE", "GRANTMAKER_SERVER", ErrorMsgGet(True, True)
+            //         objPayloadOut.CreateErrorPayload "ACCOUNT_CREATE", "GRANTMAKER_SERVER", ErrorMsgGet(True, True)
             //      End If
             //   End If
 

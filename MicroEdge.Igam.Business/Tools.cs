@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Globalization;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace MicroEdge.Igam.Business
@@ -6,6 +9,8 @@ namespace MicroEdge.Igam.Business
     public static class Tools
     {
         public static char FieldMarker = (char) 255;
+
+        #region XElement extensions
 
         /// <summary>
         /// Get the value of the indicated child element of this XElement or an empty string if the child element doesn't exist.
@@ -91,5 +96,24 @@ namespace MicroEdge.Igam.Business
                 return dflt;
             return attribute.Value;
         }
+
+        #endregion XElement extensions
+
+        #region String extensions
+        
+        public static bool IsValidEmail(this string value)
+        {
+            try
+            {
+                MailAddress address = new MailAddress(value);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        
+        #endregion String extensions
     }
 }

@@ -5,6 +5,7 @@ using System.Web;
 using MicroEdge.Grantmaker.Business;
 using MicroEdge.Igam.Business;
 using MicroEdge.Igam.Providers.Logging;
+using Newtonsoft.Json;
 using Serilog.Context;
 
 namespace MicroEdge.Grantmaker
@@ -124,22 +125,74 @@ namespace MicroEdge.Grantmaker
 
         internal static List<Payload> PayloadsProcess(Payloads payloadsIn)
         {
+            LogManager.LogInfo("Entering Context.PayloadsProcess");
+            LogManager.LogDebug("Context.PayloadsProcess executing for {0} payloads", payloadsIn.Count);
+
             List<Payload> payloadsOut = new List<Payload>();
 
             foreach (Payload payload in payloadsIn)
             {
+                Payload payloadOut = null;
                 switch (payload.CommandType)
                 {
                     case (Payload.CommandTypes.CreateApplicant):
-                        payloadsOut.Add(ApplicantActions.CreateApplicant(payload[Payload.ParameterKeys.Email], payload[Payload.ParameterKeys.Password]));
+                        payloadOut = CreateApplicant(payload);
                         break;
 
                     //TODO - add cases for all the other command types grantmaker supports
                     default:
+                        LogManager.LogDebug("Context.PayloadsProcess: no command action found for payload {0}", JsonConvert.SerializeObject(payload));
                         break;
                 }
+
+                if (payloadOut != null)
+                    payloadsOut.Add(payloadOut);
             }
+            LogManager.LogDebug("Context.PayloadsProcess returning {0} payloads", payloadsOut.Count);
+            LogManager.LogInfo("Exiting Context.PayloadsProcess");
             return payloadsOut;
+        }
+
+        /// <summary>
+        /// Invokes the appropriate business method using data from the requestPayload
+        /// and transforms the results into a payload response
+        /// </summary>
+        /// <param name="requestPayload">
+        /// Payload containing the parameters needed for this action
+        /// </param>
+        /// <returns>
+        /// Payload containing the details of the outcome of attempting the action
+        /// </returns>
+        internal static Payload CreateApplicant(Payload requestPayload)
+        {
+            LogManager.LogInfo("Entering Context.CreateApplicant");
+            LogManager.LogDebug("Context.CreateApplicant executing for requestPayload = {0}", JsonConvert.SerializeObject(requestPayload));
+
+            Payload payloadOut;
+            try
+            {
+                CreateApplicantResult result =
+                    ApplicantActions.CreateApplicant(requestPayload[Payload.ParameterKeys.Email],
+                        requestPayload[Payload.ParameterKeys.Password]);
+                if (!result.Success)
+                {
+                    string errorCode = string.Concat("CreateApplicant_", result.ErrorCode);
+                    return Payload.CreateErrorPayload(Payload.CommandTypes.CreateApplicantError,
+                        Properties.Errors.ResourceManager.GetString(errorCode));
+                }
+
+                payloadOut = new Payload {CommandType = Payload.CommandTypes.CreateApplicantSuccess};
+                payloadOut.AddParameter("APPLICANT_ID", result.ApplicantId.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogManager.LogError("Context.CreateApplicant exception: {0}", ex.Message);
+                payloadOut = Payload.CreateErrorPayload(Payload.CommandTypes.CreateApplicantError, ex.Message);
+            }
+
+            LogManager.LogDebug("Context.CreateApplicant returning: {0}", JsonConvert.SerializeObject(payloadOut));
+            LogManager.LogInfo("Exiting Context.CreateApplicant");
+            return payloadOut;
         }
     }
 }

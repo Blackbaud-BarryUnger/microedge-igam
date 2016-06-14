@@ -1,6 +1,4 @@
-﻿using System;
-using System.Configuration;
-using System.IO;
+﻿using System.Configuration;
 using MicroEdge.Igam.Business.DataAccess;
 
 namespace MicroEdge.Igam.Dal
@@ -8,8 +6,6 @@ namespace MicroEdge.Igam.Dal
     public class PreferencesData : IPreferencesData
     {
         #region Constants
-
-        private const string IniFile = "IGAM.INI";
 
         //Keys
         private static class PreferenceKeys
@@ -30,7 +26,6 @@ namespace MicroEdge.Igam.Dal
         }
 
         #endregion Constructors
-
 
         #region Properties
 

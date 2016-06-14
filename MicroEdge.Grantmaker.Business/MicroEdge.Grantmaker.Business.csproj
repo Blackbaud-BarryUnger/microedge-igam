@@ -92,11 +92,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicantActions.cs" />
-    <Compile Include="ApplicationActions.cs" />
+    <Compile Include="ActionResultBase.cs" />
+    <Compile Include="ApplicantActions\ApplicantActions.cs" />
+    <Compile Include="ApplicationActions\ApplicationActions.cs" />
     <Compile Include="CFS.cs" />
-    <Compile Include="FormActions.cs" />
-    <Compile Include="MiscellaneousActions.cs" />
+    <Compile Include="ApplicantActions\CreateApplicantResult.cs" />
+    <Compile Include="FormActions\FormActions.cs" />
+    <Compile Include="MiscellaneousActions\MiscellaneousActions.cs" />
     <Compile Include="Properties\Errors.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

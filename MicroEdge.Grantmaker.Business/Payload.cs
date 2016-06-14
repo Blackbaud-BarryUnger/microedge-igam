@@ -13,6 +13,8 @@ namespace MicroEdge.Grantmaker.Business
         public static class CommandTypes
         {
             public const string CreateApplicant = "APPLICANT_CREATE";
+            public const string CreateApplicantError = "APPLICANT_CREATE_ERROR";
+            public const string CreateApplicantSuccess = "APPLICANT_CREATE_SUCCESS";
             public const string Error = "ERROR";
             public const string SidConfirmed = "SID_CONFIRMED";
         }
@@ -78,7 +80,7 @@ namespace MicroEdge.Grantmaker.Business
         /// <summary>
         /// Generates an error payload with the indicated code and message
         /// </summary>
-        public static Payload ErrorSave(string errorCode, string errorMessage)
+        public static Payload CreateErrorPayload(string errorCode, string errorMessage)
         {
             Payload errorPayload = new Payload {CommandType = CommandTypes.Error};
             errorPayload.AddParameter(ParameterKeys.ErrorCode, errorCode);

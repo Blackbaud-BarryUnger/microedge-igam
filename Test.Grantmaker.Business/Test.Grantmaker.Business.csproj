@@ -60,6 +60,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ApplicantActionsTest.cs" />
     <Compile Include="CFSTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -67,6 +68,10 @@
     <ProjectReference Include="..\MicroEdge.Grantmaker.Business\MicroEdge.Grantmaker.Business.csproj">
       <Project>{7e4c1094-b458-43c7-8d35-c9a40a99eeb4}</Project>
       <Name>MicroEdge.Grantmaker.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Igam.Common\Test.Igam.Common.csproj">
+      <Project>{f507bd96-9901-4b81-bee7-84438d2e429d}</Project>
+      <Name>Test.Igam.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
