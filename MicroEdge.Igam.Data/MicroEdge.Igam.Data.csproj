@@ -316,7 +316,7 @@
       <Project>{8211adc7-a0ea-4b31-b9e0-b023858bb71b}</Project>
       <Name>MicroEdge.Igam.Providers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MicroEdge.Tools\MicroEdge.Igam.Tools.csproj">
+    <ProjectReference Include="..\MicroEdge.Igam.Tools\MicroEdge.Igam.Tools.csproj">
       <Project>{b9046b74-a6c9-4dc2-870b-e62b2ed4ecd8}</Project>
       <Name>MicroEdge.Igam.Tools</Name>
     </ProjectReference>
@@ -324,7 +324,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="False" BuildVersion_UpdateFileVersion="True" BuildVersion_ConfigurationName="Release" BuildVersion_DetectChanges="False" />
+      <UserProperties BuildVersion_DetectChanges="False" BuildVersion_ConfigurationName="Release" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="False" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

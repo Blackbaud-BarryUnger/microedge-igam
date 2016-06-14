@@ -21,9 +21,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Grantmaker", "Test.Gra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Igam.Common", "Test.Igam.Common\Test.Igam.Common.csproj", "{F507BD96-9901-4B81-BEE7-84438D2E429D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroEdge.Igam.Data", "MicroEdge.Data\MicroEdge.Igam.Data.csproj", "{2068EBDD-79D6-49B4-9BDA-BF9A1F378627}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroEdge.Igam.Data", "MicroEdge.Igam.Data\MicroEdge.Igam.Data.csproj", "{2068EBDD-79D6-49B4-9BDA-BF9A1F378627}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroEdge.Igam.Tools", "MicroEdge.Tools\MicroEdge.Igam.Tools.csproj", "{B9046B74-A6C9-4DC2-870B-E62B2ED4ECD8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroEdge.Igam.Tools", "MicroEdge.Igam.Tools\MicroEdge.Igam.Tools.csproj", "{B9046B74-A6C9-4DC2-870B-E62B2ED4ECD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

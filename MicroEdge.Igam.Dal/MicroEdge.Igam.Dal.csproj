@@ -47,10 +47,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MicroEdge.Data\MicroEdge.Igam.Data.csproj">
-      <Project>{2068ebdd-79d6-49b4-9bda-bf9a1f378627}</Project>
-      <Name>MicroEdge.Igam.Data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MicroEdge.Igam.Business\MicroEdge.Igam.Business.csproj">
       <Project>{31ea6a06-82a2-4e57-bad3-263b88f4e047}</Project>
       <Name>MicroEdge.Igam.Business</Name>
