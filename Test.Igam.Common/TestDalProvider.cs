@@ -31,6 +31,9 @@ namespace Test.Igam.Common
             if (type == typeof(IPreferencesData))
                 return new TestPreferencesData() as T;
 
+            if (type == typeof (IApplicantData))
+                return new TestApplicantData() as T;
+
             return null;
         }
 

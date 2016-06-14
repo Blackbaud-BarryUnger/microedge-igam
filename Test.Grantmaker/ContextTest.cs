@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using MicroEdge;
 using MicroEdge.Grantmaker;
 using MicroEdge.Grantmaker.Business;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -48,6 +49,23 @@ namespace Test.Grantmaker
             target.CommandType.Should().Be(Payload.CommandTypes.Error);
             target[Payload.ParameterKeys.ErrorCode].Should().Be(Payload.CommandTypes.CreateApplicantError);
             target[Payload.ParameterKeys.ErrorLocation].Should().Be(expected);
+        }
+
+        /// <summary>
+        /// Confirms the correct payload response is returned by Context.CreateApplicant 
+        /// when ApplicantActions.CreateApplicant returns an success response
+        /// </summary>
+        [TestMethod]
+        public void CreateApplicantSuccessTest()
+        {
+            Payload input = new Payload { CommandType = Payload.CommandTypes.CreateApplicant };
+            input.AddParameter(Payload.ParameterKeys.Email, "joeblow@noway.net");
+            input.AddParameter(Payload.ParameterKeys.Password, "password");
+            input.AddParameter(Payload.ParameterKeys.ApplicationId, "7777");
+
+            Payload target = Context.CreateApplicant(input);
+            target.CommandType.Should().Be(Payload.CommandTypes.CreateApplicantSuccess);
+            Tools.ToInt32(target[Payload.ParameterKeys.ApplicantId]).Should().BeGreaterThan(0);
         }
 
     }

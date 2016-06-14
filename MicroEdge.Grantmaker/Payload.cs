@@ -21,6 +21,7 @@ namespace MicroEdge.Grantmaker
 
         public static class ParameterKeys
         {
+            public const string ApplicantId = "APPLICANT_ID";
             public const string ApplicationId = "APPLICATION_ID";
             public const string Email = "EMAIL";
             public const string ErrorCode = "ERROR_CODE";

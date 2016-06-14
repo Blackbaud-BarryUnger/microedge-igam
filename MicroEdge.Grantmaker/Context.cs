@@ -182,7 +182,7 @@ namespace MicroEdge.Grantmaker
                 }
 
                 payloadOut = new Payload {CommandType = Payload.CommandTypes.CreateApplicantSuccess};
-                payloadOut.AddParameter("APPLICANT_ID", result.ApplicantId.ToString());
+                payloadOut.AddParameter(Payload.ParameterKeys.ApplicantId, result.ApplicantId.ToString());
             }
             catch (Exception ex)
             {
