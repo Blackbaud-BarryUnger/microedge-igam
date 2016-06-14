@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MicroEdge.Igam.Business.DataAccess
+﻿namespace MicroEdge.Igam.Business.DataAccess
 {
     public enum ReturnStatus
     {
@@ -12,7 +6,15 @@ namespace MicroEdge.Igam.Business.DataAccess
         NotFound = 1,
     }
 
+    /// <summary>
+    /// Base interface for dal object interfaces that support full CRUD functionality
+    /// </summary>
     public interface IData
     {
+        int Id { get; }
+
+        ReturnStatus Read(int id);
+        void Update();
+        void Delete();
     }
 }

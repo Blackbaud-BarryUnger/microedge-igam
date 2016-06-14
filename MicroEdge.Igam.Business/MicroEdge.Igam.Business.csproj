@@ -94,8 +94,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Applicant.cs" />
+    <Compile Include="BusinessBase.cs" />
     <Compile Include="ClientDb.cs" />
     <Compile Include="CommonRequest.cs" />
+    <Compile Include="DataAccess\IApplicantData.cs" />
     <Compile Include="DataAccess\IData.cs" />
     <Compile Include="DataAccess\IPreferencesData.cs" />
     <Compile Include="LogProvider.cs" />

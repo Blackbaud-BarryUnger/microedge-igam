@@ -1,4 +1,5 @@
-﻿using MicroEdge.Igam.Providers.Logging;
+﻿using MicroEdge.Igam.Business;
+using MicroEdge.Igam.Providers.Logging;
 using Newtonsoft.Json;
 
 namespace MicroEdge.Grantmaker.Business
@@ -10,9 +11,10 @@ namespace MicroEdge.Grantmaker.Business
     {
         /// <summary>
         /// Does the work of creating an applicant account with the indicated 
-        /// email address and password.
+        /// email address and password.  A "current application id" may also be
+        /// supplied, but it is optional
         /// </summary>
-        public static CreateApplicantResult CreateApplicant(string email, string password)
+        public static CreateApplicantResult CreateApplicant(string email, string password, int applicationId)
         {
             LogManager.LogInfo("Entering ApplicantActions.CreateApplicant");
             LogManager.LogDebug("ApplicantActions.CreateApplicant executing for email = {0}, password = {1}", email, password);
@@ -25,7 +27,14 @@ namespace MicroEdge.Grantmaker.Business
                 result.ErrorCode = CreateApplicantResult.ErrorCodes.InvalidEmail;
             else
             {
-                //TODO - convert over the MisActions.ApplicantCreate from VB6
+                Applicant applicant = new Applicant();
+                applicant.Email = email;
+                applicant.Password = password;
+                applicant.CurrentApplicationId = applicationId;
+                applicant.Update();
+
+                result.Success = true;
+                result.ApplicantId = applicant.Id;
             }
 
             LogManager.LogDebug("ApplicantActions.CreateApplicant returning: {0}", JsonConvert.SerializeObject(result));

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Web;
 using MicroEdge.Grantmaker.Business;
+using MicroEdge.Grantmaker.Properties;
 using MicroEdge.Igam.Business;
 using MicroEdge.Igam.Providers.Logging;
 using Newtonsoft.Json;
@@ -45,7 +45,7 @@ namespace MicroEdge.Grantmaker
                 return;
 
             if (!request.RequestData.ContainsKey(PayloadKey))
-                throw new Exception(Properties.Errors.InvalidPayload);
+                throw new Exception(Errors.InvalidPayload);
 
             Payloads payloadsIn = new Payloads(request.RequestData[PayloadKey].ToString());
             Payloads payloadsOut = new Payloads();
@@ -173,12 +173,12 @@ namespace MicroEdge.Grantmaker
             {
                 CreateApplicantResult result =
                     ApplicantActions.CreateApplicant(requestPayload[Payload.ParameterKeys.Email],
-                        requestPayload[Payload.ParameterKeys.Password]);
+                        requestPayload[Payload.ParameterKeys.Password], Tools.ToInt32(requestPayload[Payload.ParameterKeys.ApplicationId]));
                 if (!result.Success)
                 {
                     string errorCode = string.Concat("CreateApplicant_", result.ErrorCode);
                     return Payload.CreateErrorPayload(Payload.CommandTypes.CreateApplicantError,
-                        Properties.Errors.ResourceManager.GetString(errorCode));
+                        Errors.ResourceManager.GetString(errorCode));
                 }
 
                 payloadOut = new Payload {CommandType = Payload.CommandTypes.CreateApplicantSuccess};

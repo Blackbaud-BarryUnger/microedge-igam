@@ -68,6 +68,10 @@
       <Project>{7e4c1094-b458-43c7-8d35-c9a40a99eeb4}</Project>
       <Name>MicroEdge.Grantmaker.Business</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MicroEdge.Igam.Business\MicroEdge.Igam.Business.csproj">
+      <Project>{31ea6a06-82a2-4e57-bad3-263b88f4e047}</Project>
+      <Name>MicroEdge.Igam.Business</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Test.Igam.Common\Test.Igam.Common.csproj">
       <Project>{f507bd96-9901-4b81-bee7-84438d2e429d}</Project>
       <Name>Test.Igam.Common</Name>
