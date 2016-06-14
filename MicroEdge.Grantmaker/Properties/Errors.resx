@@ -138,6 +138,12 @@
   <data name="CFS_WrongSerialNumber" xml:space="preserve">
     <value>The wrong Serial Number was specified in the Payload.</value>
   </data>
+  <data name="CreateApplicant_INVALID_EMAIL" xml:space="preserve">
+    <value>The applicant's email address does not satisfy email construction requirements.</value>
+  </data>
+  <data name="CreateApplicant_MISSING_EMAIL_PASSWORD" xml:space="preserve">
+    <value>Unable to create an Applicant. The Applicant's Email or Password were not specified.</value>
+  </data>
   <data name="InvalidPayload" xml:space="preserve">
     <value>Invalid payload</value>
   </data>

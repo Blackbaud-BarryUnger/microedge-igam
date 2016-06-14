@@ -70,6 +70,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MicroEdge.Grantmaker.Business\MicroEdge.Grantmaker.Business.csproj">
+      <Project>{7e4c1094-b458-43c7-8d35-c9a40a99eeb4}</Project>
+      <Name>MicroEdge.Grantmaker.Business</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MicroEdge.Grantmaker\MicroEdge.Grantmaker.csproj">
       <Project>{c3a3973c-7820-4a82-baf2-c46df5d1c187}</Project>
       <Name>MicroEdge.Grantmaker</Name>

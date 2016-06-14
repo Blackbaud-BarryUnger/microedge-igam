@@ -124,6 +124,24 @@ namespace MicroEdge.Grantmaker.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The applicant&apos;s email address does not satisfy email construction requirements..
+        /// </summary>
+        internal static string CreateApplicant_INVALID_EMAIL {
+            get {
+                return ResourceManager.GetString("CreateApplicant_INVALID_EMAIL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to create an Applicant. The Applicant&apos;s Email or Password were not specified..
+        /// </summary>
+        internal static string CreateApplicant_MISSING_EMAIL_PASSWORD {
+            get {
+                return ResourceManager.GetString("CreateApplicant_MISSING_EMAIL_PASSWORD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid payload.
         /// </summary>
         internal static string InvalidPayload {

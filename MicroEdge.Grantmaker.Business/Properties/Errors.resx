@@ -117,10 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CreateApplicant_INVALID_EMAIL" xml:space="preserve">
-    <value>The applicant's email address does not satisfy email construction requirements.</value>
-  </data>
-  <data name="CreateApplicant_MISSING_EMAIL_PASSWORD" xml:space="preserve">
-    <value>Unable to create an Applicant. The Applicant's Email or Password were not specified.</value>
-  </data>
 </root>
