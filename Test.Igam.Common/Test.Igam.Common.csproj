@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MicroEdge.Igam.Providers, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MicroEdge.Igam.Providers.0.1.0.16061601\lib\net452\MicroEdge.Igam.Providers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -52,10 +56,9 @@
       <Project>{31ea6a06-82a2-4e57-bad3-263b88f4e047}</Project>
       <Name>MicroEdge.Igam.Business</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MicroEdge.Igam.Providers\MicroEdge.Igam.Providers.csproj">
-      <Project>{8211adc7-a0ea-4b31-b9e0-b023858bb71b}</Project>
-      <Name>MicroEdge.Igam.Providers</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
