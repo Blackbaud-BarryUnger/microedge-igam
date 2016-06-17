@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -181,9 +182,9 @@ namespace MicroEdge.Igam.Data
 
                 return returnStatus;
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
-                throw new SystemException(string.Format("Error occurred while reading a row from the {0} table.", TableName), e);
+                throw new Exception(string.Format("Error occurred while reading a row from the {0} table.", TableName), e);
             }
         }
 

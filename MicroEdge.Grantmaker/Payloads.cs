@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using MicroEdge.Igam.Business;
+using MicroEdge.Grantmaker.Properties;
+using MicroEdge.Igam.Tools;
 
 namespace MicroEdge.Grantmaker
 {
@@ -16,7 +17,7 @@ namespace MicroEdge.Grantmaker
         public Payloads(string payloadsXml)
         {
             if (string.IsNullOrEmpty(payloadsXml))
-                throw new Exception(Properties.Errors.InvalidPayload);
+                throw new Exception(Errors.InvalidPayload);
 
             XDocument payload = XDocument.Parse(payloadsXml);
             if (payload.Root == null)

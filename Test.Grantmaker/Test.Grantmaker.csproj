@@ -87,10 +87,6 @@
       <Project>{7377c7b8-d301-473a-9bd4-2e2b24202149}</Project>
       <Name>MicroEdge.Igam.Dal</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MicroEdge.Igam.Tools\MicroEdge.Igam.Tools.csproj">
-      <Project>{b9046b74-a6c9-4dc2-870b-e62b2ed4ecd8}</Project>
-      <Name>MicroEdge.Igam.Tools</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Test.Igam.Common\Test.Igam.Common.csproj">
       <Project>{f507bd96-9901-4b81-bee7-84438d2e429d}</Project>
       <Name>Test.Igam.Common</Name>

@@ -47,6 +47,10 @@
       <HintPath>..\packages\MicroEdge.Igam.Providers.0.1.0.16061601\lib\net452\MicroEdge.Igam.Providers.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MicroEdge.Igam.Tools, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MicroEdge.Igam.Tools.0.1.0.16061704\lib\net452\MicroEdge.Igam.Tools.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
@@ -136,10 +140,6 @@
     <ProjectReference Include="..\MicroEdge.Igam.Dal\MicroEdge.Igam.Dal.csproj">
       <Project>{7377c7b8-d301-473a-9bd4-2e2b24202149}</Project>
       <Name>MicroEdge.Igam.Dal</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MicroEdge.Igam.Tools\MicroEdge.Igam.Tools.csproj">
-      <Project>{b9046b74-a6c9-4dc2-870b-e62b2ed4ecd8}</Project>
-      <Name>MicroEdge.Igam.Tools</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

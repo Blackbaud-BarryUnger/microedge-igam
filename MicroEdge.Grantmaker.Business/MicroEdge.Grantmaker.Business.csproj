@@ -42,6 +42,10 @@
       <HintPath>..\packages\MicroEdge.Igam.Providers.0.1.0.16061601\lib\net452\MicroEdge.Igam.Providers.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MicroEdge.Igam.Tools, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MicroEdge.Igam.Tools.0.1.0.16061704\lib\net452\MicroEdge.Igam.Tools.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -113,10 +117,6 @@
     <ProjectReference Include="..\MicroEdge.Igam.Business\MicroEdge.Igam.Business.csproj">
       <Project>{31ea6a06-82a2-4e57-bad3-263b88f4e047}</Project>
       <Name>MicroEdge.Igam.Business</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MicroEdge.Igam.Tools\MicroEdge.Igam.Tools.csproj">
-      <Project>{b9046b74-a6c9-4dc2-870b-e62b2ed4ecd8}</Project>
-      <Name>MicroEdge.Igam.Tools</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
