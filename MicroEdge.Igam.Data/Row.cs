@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
-using System.Diagnostics;
 using System.Text;
 using MicroEdge.Igam.Providers.Cache;
 
@@ -19,42 +18,28 @@ namespace MicroEdge.Igam.Data
 	[Serializable]
 	public class Row
 	{
-		#region Fields
+        #region Fields
 
-		//Table this row is associated with.
-		protected string tableName;
+	    private DataTable _schema;
 
-		//Data object this row is associated with.
-		protected Data _data;
+        #endregion Fields
 
-		//Current and original values of columns.
-		protected HybridDictionary current;
-		protected HybridDictionary original;
+        #region Constructors
 
-		//Flags to indicate if the row is new or has been flagged for deletion.
-		protected bool isNew = true;
-		protected bool isDeleted;
-
-		//The schema of the table this row is associated with presented as a DataTable.
-		protected DataTable _schema;
-
-		#endregion Fields
-
-		#region Constructors
-
-		/// <summary>
-		/// Constructor to initialize database connection and table name from which to read.
-		/// </summary>
-		/// <param name="data">
-		/// A MicroEdge.Igam.Data object to indicate the connection the data will be read from.
-		/// </param>
-		/// <param name="tableName">
-		/// The name of the table from which the row of data will be read.
-		/// </param>
-		public Row(Data data, string tableName)
+        /// <summary>
+        /// Constructor to initialize database connection and table name from which to read.
+        /// </summary>
+        /// <param name="data">
+        /// A MicroEdge.Igam.Data object to indicate the connection the data will be read from.
+        /// </param>
+        /// <param name="tableName">
+        /// The name of the table from which the row of data will be read.
+        /// </param>
+        public Row(Data data, string tableName)
 		{
-			_data = data;
-			this.tableName = tableName;
+		    IsNew = true;
+			Data = data;
+			TableName = tableName;
 		}
 
 
@@ -86,51 +71,41 @@ namespace MicroEdge.Igam.Data
 		/// Used when we have tables in different database with the same name used by the same 
 		/// app at the same time.
 		/// </summary>
-		protected virtual bool CacheSchema { get { return true; } }
+		protected virtual bool CacheSchema => true;
+
+	    protected HybridDictionary Current { get; set; }
 
 		/// <summary>
 		/// The MicroEdge.Igam.Data connection used to read this row of data.
 		/// </summary>
-		public virtual Data Data
-		{
-			get { return _data; }
-		}
+		public virtual Data Data { get; protected set; }
 
 		/// <summary>
 		/// The name of the table of this row.
 		/// </summary>
-		public string TableName
-		{
-			get { return tableName; }
-		}
+		public string TableName { get; protected set; }
 
 		/// <summary>
 		/// Whether this is a new row.
 		/// </summary>
-		public bool IsNew
-		{
-			get { return isNew; }
-		}
+		public bool IsNew { get; protected set; }
 
-		/// <summary>
-		/// Whether this row is flagged for deletion.
-		/// </summary>
-		public bool IsDeleted
-		{
-			get { return isDeleted; }
-		}
+        /// <summary>
+        /// Whether this row is flagged for deletion.
+        /// </summary>
+        public bool IsDeleted { get; protected set; }
 
-		/// <summary>
-		/// Whether this row has been changed since being read from the database.
-		/// </summary>
-		public virtual bool IsDirty
+        /// <summary>
+        /// Whether this row has been changed since being read from the database.
+        /// </summary>
+        public virtual bool IsDirty
 		{
 			get
 			{
 				//Check each field to see if it has changed.
-				foreach (DictionaryEntry de in current)
+				foreach (DictionaryEntry de in Current)
 				{
-					if (!Tools.Equals(de.Value, original[de.Key]))
+					if (!Tools.Tools.Equals(de.Value, Original[de.Key]))
 					{
 						return true;
 					}
@@ -144,12 +119,9 @@ namespace MicroEdge.Igam.Data
 		/// Name of the field in the table that provides the key for this row.
 		/// Default is 'Id', but may be overridden by deriving classes
 		/// </summary>
-		protected virtual string KeyColumnName
-		{
-			get { return "Id"; }
-		}
+		protected virtual string KeyColumnName => "Id";
 
-		/// <summary>
+	    /// <summary>
 		/// The schema for the table this row is associated with presented as a DataTable object.
 		/// </summary>
 		protected DataTable Schema
@@ -162,74 +134,32 @@ namespace MicroEdge.Igam.Data
 				return _schema;
 			}
 		}
+        protected HybridDictionary Original { get; set; }
 
-
-		/// <summary>
-		/// Indexer to get the value of a column given the name of the column.
-		/// </summary>
-		/// <param name="columnName">
-		/// The name of the column whose value to return.
-		/// </param>
-		/// <returns>
-		/// The value of the column with the indicated name.
-		/// </returns>
-		protected object this[string columnName]
+        /// <summary>
+        /// Indexer to get the value of a column given the name of the column.
+        /// </summary>
+        /// <param name="columnName">
+        /// The name of the column whose value to return.
+        /// </param>
+        /// <returns>
+        /// The value of the column with the indicated name.
+        /// </returns>
+        protected object this[string columnName]
 		{
 			get
 			{
-				AssertColumnExists(columnName);
-
-				return current[columnName];
+				return Current[columnName];
 			}
 			set
 			{
-				AssertColumnExists(columnName);
-
-				current[columnName] = value;
+				Current[columnName] = value;
 			}
 		}
-
-
 
 		#endregion Properties
 
 		#region Methods
-
-		/// <summary>
-		/// This is a method to prevent problems, which verifies that the column name exists in the current Schema.
-		/// </summary>
-		/// <param name="columnName">Column name to check for.</param>
-		/// <returns>True if the column exists.</returns>
-		/// <remarks>
-		/// The ConditionalAttribute will ensure this is not run when compiled for release, as it may have
-		/// performance effects.
-		/// </remarks>
-		[ConditionalAttribute("DEBUG")]
-		private void AssertColumnExists(string columnName)
-		{
-			// NOTE - Only uncomment when you need this and DON'T check the class back in with it uncommented; 
-			// it creates all sorts of snafu's on a regular basis when debugging.
-
-			//bool exists;
-			//if (!Schema.Columns.Contains(columnName))
-			//{
-			//    exists = false;
-			//}
-			//else
-			//{
-			//    DataColumn column = Schema.Columns[columnName];
-
-			//    // Getting the column name explicitly like this is the only
-			//    //	way to make sure it is a case-sensitive comparison.
-			//    exists = column.ColumnName == columnName;
-			//}
-
-			//if (!exists)
-			//{
-			//    // Instead of returning false, throw an exception
-			//    throw new SystemException("Column '" + columnName + "' isn't in schema for table '" + TableName + "'.");
-			//}
-		}
 
 		/// <summary>
 		/// Returns the name of the column at the indicated position in the 
@@ -249,22 +179,22 @@ namespace MicroEdge.Igam.Data
 		{
 			try
 			{
-				isNew = true;
-				isDeleted = false;
+				IsNew = true;
+				IsDeleted = false;
 
 				//Create an entry in the dictionary for each column in the schema.
-				current = new HybridDictionary(Schema.Columns.Count, true);
-				original = new HybridDictionary(Schema.Columns.Count, true);
+				Current = new HybridDictionary(Schema.Columns.Count, true);
+				Original = new HybridDictionary(Schema.Columns.Count, true);
 
 				foreach (DataColumn column in Schema.Columns)
 				{
-					current.Add(column.ColumnName, DBNull.Value);
-					original.Add(column.ColumnName, DBNull.Value);
+					Current.Add(column.ColumnName, DBNull.Value);
+					Original.Add(column.ColumnName, DBNull.Value);
 				}
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new SystemException(String.Format("Error occurred while initializing a new row for the {0} table.", TableName), e);
+				throw new SystemException(string.Format("Error occurred while initializing a new row for the {0} table.", TableName), e);
 			}
 		}
 
@@ -292,7 +222,7 @@ namespace MicroEdge.Igam.Data
 			if (where != "" && !where.ToLower().StartsWith("where"))
 				where = "Where " + where;
 
-			string sql = String.Format("Select * From {0} {1}", SqlTools.EscapeName(TableName), where);
+			string sql = string.Format("Select * From {0} {1}", SqlTools.EscapeName(TableName), where);
 
 			return Read(sql);
 		}
@@ -327,7 +257,7 @@ namespace MicroEdge.Igam.Data
 			if (where != "" && !where.ToLower().StartsWith("where "))
 				where = "Where " + where;
 
-			string sql = String.Format("Select {0} From {1} {2}", sqlColumns, SqlTools.EscapeName(TableName), where);
+			string sql = string.Format("Select {0} From {1} {2}", sqlColumns, SqlTools.EscapeName(TableName), where);
 
 			return Read(sql);
 		}
@@ -371,17 +301,17 @@ namespace MicroEdge.Igam.Data
 
 				using (IDataReader reader = Data.GetReader(command))
 				{
-					isDeleted = false;
+					IsDeleted = false;
 					if (reader.Read())
 					{
 						SetColumnValues(reader);
 						reader.Close();
-						isNew = false;
+						IsNew = false;
 					}
 					else
 					{
 						//Not found. Initialize this as a new row of the table.
-						isNew = true;
+						IsNew = true;
 						reader.Close();
 						NewRow();
 						returnStatus = ReturnStatus.NotFound;
@@ -390,9 +320,9 @@ namespace MicroEdge.Igam.Data
 
 				return returnStatus;
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new SystemException(String.Format("Error occurred while reading a row from the {0} table.", TableName), e);
+				throw new SystemException(string.Format("Error occurred while reading a row from the {0} table.", TableName), e);
 			}
 		}
 
@@ -407,11 +337,12 @@ namespace MicroEdge.Igam.Data
 			bool currentRow = true;
 
 			//Determine if we have a current row by trying to read the first column.
+		    // ReSharper disable once UnusedVariable
 			try { object value = reader[0]; }
 			catch { currentRow = false; }
 
-			current = new HybridDictionary(1, true);
-			original = new HybridDictionary(1, true);
+			Current = new HybridDictionary(1, true);
+			Original = new HybridDictionary(1, true);
 
 			//Move all the fields for the current table from the reader into the current and original rows.
 			for (int i = 0; i < reader.FieldCount; i++)
@@ -423,7 +354,7 @@ namespace MicroEdge.Igam.Data
 				if (columnName.Contains("."))
 				{
 					string[] nameParts = columnName.Split('.');
-					if (nameParts[0].Equals(tableName, StringComparison.OrdinalIgnoreCase))
+					if (nameParts[0].Equals(TableName, StringComparison.OrdinalIgnoreCase))
 						columnName = nameParts[1];
 				}
 
@@ -431,11 +362,11 @@ namespace MicroEdge.Igam.Data
 				//Also make sure we haven't already added a value for this column name (some db's, like MSSQL, have
 				//a habit of including additional columns from other tables which may have the same name as those
 				//from this table, depending on your joins/where criteria)
-				if (Schema.Columns.Contains(columnName) && !current.Contains(columnName))
+				if (Schema.Columns.Contains(columnName) && !Current.Contains(columnName))
 				{
 					object value = currentRow ? reader[i] : DBNull.Value;
-					current.Add(columnName, value);
-					original.Add(columnName, value);
+					Current.Add(columnName, value);
+					Original.Add(columnName, value);
 				}
 			}
 
@@ -443,14 +374,14 @@ namespace MicroEdge.Igam.Data
 			if (currentRow)
 			{
 				//This won't be a new row or deleted because it's just come from the db.
-				isNew = false;
-				isDeleted = false;
+				IsNew = false;
+				IsDeleted = false;
 			}
 			else
 			{
 				//If there is no current row, consider this a new row.
-				isNew = true;
-				isDeleted = false;
+				IsNew = true;
+				IsDeleted = false;
 			}
 		}
 
@@ -490,7 +421,7 @@ namespace MicroEdge.Igam.Data
 					{
 						Type dataType = dataColumns[i].DataType;
 						string column = dataColumns[i].ColumnName;
-						object value = current[column];
+						object value = Current[column];
 						int maxLength = dataColumns[i].MaxLength;
 
 						//Only include the column in the insert if it is NOT an autoincrement column 
@@ -532,7 +463,7 @@ namespace MicroEdge.Igam.Data
 					}
 
 					//Put it all together
-					command.CommandText = String.Format("Insert Into {0} ({1}) VALUES ({2})",
+					command.CommandText = string.Format("Insert Into {0} ({1}) VALUES ({2})",
 						SqlTools.EscapeName(TableName), string.Join(", ", cols),
 						string.Join(", ", vals));
 
@@ -550,15 +481,15 @@ namespace MicroEdge.Igam.Data
 						Data.ExecuteCommand(command);
 
 					//It's no longer new.
-					isNew = false;
+					IsNew = false;
 
 					//AcceptChanges so this row won't be seen as dirty.
 					AcceptChanges();
 				}
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new SystemException(String.Format("Error occurred while inserting a row into the {0} table.", TableName), e);
+				throw new SystemException(string.Format("Error occurred while inserting a row into the {0} table.", TableName), e);
 			}
 		}
 
@@ -570,7 +501,7 @@ namespace MicroEdge.Igam.Data
 		{
 			try
 			{
-				StringBuilder sb = new StringBuilder(String.Format("Delete From {0} Where", SqlTools.EscapeName(tableName)));
+				StringBuilder sb = new StringBuilder(string.Format("Delete From {0} Where", SqlTools.EscapeName(TableName)));
 
 				IDbCommand command = SqlTools.GetCommand("");
 				DataColumn[] keyColumns = GetKeyColumns();
@@ -583,7 +514,7 @@ namespace MicroEdge.Igam.Data
 					sb.Append(" = ");
 					sb.Append(SqlTools.GetSqlParamName(column));
 
-					command.Parameters.Add(SqlTools.GetDataParameter(column, keyColumn.DataType, original[column], keyColumn.MaxLength));
+					command.Parameters.Add(SqlTools.GetDataParameter(column, keyColumn.DataType, Original[column], keyColumn.MaxLength));
 
 					sb.Append(" And ");
 				}
@@ -595,12 +526,12 @@ namespace MicroEdge.Igam.Data
 				Data.ExecuteCommand(command);
 
 				//It's now new since it doesn't exist in the backend.
-				isNew = true;
-				isDeleted = false;
+				IsNew = true;
+				IsDeleted = false;
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new SystemException(String.Format("Error occurred while deleting a row from the {0} table.", TableName), e);
+				throw new SystemException(string.Format("Error occurred while deleting a row from the {0} table.", TableName), e);
 			}
 		}
 
@@ -622,10 +553,10 @@ namespace MicroEdge.Igam.Data
 					string column = dataColumns[i].ColumnName;
 
 					//Insure this column was previously read.
-					if (current.Contains(column))
+					if (Current.Contains(column))
 					{
-						object oldValue = original[column];
-						object newValue = current[column];
+						object oldValue = Original[column];
+						object newValue = Current[column];
 						Type dataType = dataColumns[i].DataType;
 
 						//All boolean values will be stored as False if null.
@@ -637,29 +568,29 @@ namespace MicroEdge.Igam.Data
 							newValue = DBNull.Value;
 
 						//Only update the column if the data has changed.
-						if (!Tools.Equals(oldValue, newValue))
-						{
-							sb.Append(SqlTools.EscapeName(column));
-							sb.Append(" = ");
+					    if (Tools.Tools.Equals(oldValue, newValue))
+                            continue;
 
-							IDbDataParameter dataParameter = SqlTools.GetDataParameter(column, dataType, newValue, dataColumns[i].MaxLength);
+					    sb.Append(SqlTools.EscapeName(column));
+					    sb.Append(" = ");
 
-							//If the parameter comes back null, don't include this column in the update. 
-							//If the parameter we get has a true null value (rather than DBNull), that indicates 
-							//we're not using a parameter, but some db function instead, returned as the name
-							//of the parameter.
-							if (dataParameter != null)
-							{
-								if (dataParameter.Value == null)
-									sb.Append(dataParameter.ParameterName);
-								else
-								{
-									command.Parameters.Add(dataParameter);
-									sb.Append(SqlTools.GetSqlParamName(column));
-								}
-								sb.Append(", ");
-							}
-						}
+					    IDbDataParameter dataParameter = SqlTools.GetDataParameter(column, dataType, newValue, dataColumns[i].MaxLength);
+
+					    //If the parameter comes back null, don't include this column in the update. 
+					    //If the parameter we get has a true null value (rather than DBNull), that indicates 
+					    //we're not using a parameter, but some db function instead, returned as the name
+					    //of the parameter.
+					    if (dataParameter != null)
+					    {
+					        if (dataParameter.Value == null)
+					            sb.Append(dataParameter.ParameterName);
+					        else
+					        {
+					            command.Parameters.Add(dataParameter);
+					            sb.Append(SqlTools.GetSqlParamName(column));
+					        }
+					        sb.Append(", ");
+					    }
 					}
 				}
 
@@ -671,13 +602,13 @@ namespace MicroEdge.Igam.Data
 
 					//Add where clause for key columns.
 					sql = sql.Remove(sql.Length - 2, 2); //Remove trailing comma.
-					sql = String.Format("Update {0} Set {1} Where ", SqlTools.EscapeName(TableName), sql);
+					sql = string.Format("Update {0} Set {1} Where ", SqlTools.EscapeName(TableName), sql);
 					foreach (DataColumn keyColumn in keyColumns)
 					{
 						string column = keyColumn.ColumnName;
 						sql += SqlTools.EscapeName(column) + " = " + SqlTools.GetSqlParamName(column);
 
-						command.Parameters.Add(SqlTools.GetDataParameter(column, keyColumn.DataType, original[column], keyColumn.MaxLength));
+						command.Parameters.Add(SqlTools.GetDataParameter(column, keyColumn.DataType, Original[column], keyColumn.MaxLength));
 
 						sql += " And ";
 					}
@@ -692,7 +623,7 @@ namespace MicroEdge.Igam.Data
 
 						sql += SqlTools.EscapeName(column) + " = " + SqlTools.GetSqlParamName(paramColumn);
 
-						command.Parameters.Add(SqlTools.GetDataParameter(paramColumn, updateColumn.DataType, original[column], updateColumn.MaxLength));
+						command.Parameters.Add(SqlTools.GetDataParameter(paramColumn, updateColumn.DataType, Original[column], updateColumn.MaxLength));
 
 						sql += " And ";
 					}
@@ -712,9 +643,9 @@ namespace MicroEdge.Igam.Data
 					AcceptChanges();
 				}
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new SystemException(String.Format("Error occurred while updating a row in the {0} table.", TableName), e);
+				throw new SystemException(string.Format("Error occurred while updating a row in the {0} table.", TableName), e);
 			}
 		}
 
@@ -728,7 +659,7 @@ namespace MicroEdge.Igam.Data
 			DataColumn[] keyColumns = null;
 
 			if (!string.IsNullOrEmpty(KeyColumnName) && Schema.Columns.Contains(KeyColumnName))
-				keyColumns = new DataColumn[] { Schema.Columns[KeyColumnName] };
+				keyColumns = new[] { Schema.Columns[KeyColumnName] };
 
 			if (keyColumns == null || keyColumns.Length == 0)
 				keyColumns = Schema.PrimaryKey;
@@ -781,7 +712,7 @@ namespace MicroEdge.Igam.Data
 		/// </summary>
 		public virtual void MarkDeleted()
 		{
-			isDeleted = true;
+			IsDeleted = true;
 		}
 
 
@@ -790,7 +721,7 @@ namespace MicroEdge.Igam.Data
 		/// </summary>
 		public virtual void MarkNew()
 		{
-			isNew = true;
+			IsNew = true;
 		}
 
 
@@ -799,7 +730,7 @@ namespace MicroEdge.Igam.Data
 		/// </summary>
 		public virtual void MarkOld()
 		{
-			isNew = false;
+			IsNew = false;
 		}
 
 		/// <summary>
@@ -807,8 +738,8 @@ namespace MicroEdge.Igam.Data
 		/// </summary>
 		public virtual void AcceptChanges()
 		{
-			foreach (DictionaryEntry de in current)
-				original[de.Key] = de.Value;
+			foreach (DictionaryEntry de in Current)
+				Original[de.Key] = de.Value;
 		}
 
 		/// <summary>
@@ -844,14 +775,14 @@ namespace MicroEdge.Igam.Data
 			{
 				_schema = Data.ReadSchema(TableName);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new SystemException(String.Format("Error occurred while reading schema for {0} table.", TableName), e);
+				throw new SystemException(string.Format("Error occurred while reading schema for {0} table.", TableName), e);
 			}
 
 			//Throw an error if the schema could not be obtained.
 			if (_schema == null)
-				throw new SystemException(String.Format("Schema for {0} table could not be read.", TableName));
+				throw new SystemException(string.Format("Schema for {0} table could not be read.", TableName));
 		}
 
 
@@ -866,7 +797,7 @@ namespace MicroEdge.Igam.Data
 		/// </returns>
 		public virtual object GetOriginal(string columnName)
 		{
-			return original[columnName];
+			return Original[columnName];
 		}
 
 		/// <summary>
@@ -893,7 +824,7 @@ namespace MicroEdge.Igam.Data
 	///  Created:   08/04/2006
 	/// </remarks>
 	[Serializable]
-	public class Row<K> : Row
+	public class Row<TK> : Row
 	{
 		#region Constructors
 
@@ -917,14 +848,14 @@ namespace MicroEdge.Igam.Data
 		/// <returns>
 		/// ReturnStatus.Success or ReturnStatus.NotFound.
 		/// </returns>
-		public virtual ReturnStatus Read(K key)
+		public virtual ReturnStatus Read(TK key)
 		{
 			try
 			{
 				//Create a command to read the row using the primary key.
 				DataColumn keyColumn = GetKeyColumns()[0];
 
-				string sql = String.Format("Select * from {0} Where {1} = {2}", SqlTools.EscapeName(TableName),
+				string sql = string.Format("Select * from {0} Where {1} = {2}", SqlTools.EscapeName(TableName),
 					SqlTools.EscapeName(keyColumn.ColumnName), SqlTools.GetSqlParamName(keyColumn.ColumnName));
 
 				IDbCommand command = SqlTools.GetCommand(sql);
@@ -932,9 +863,9 @@ namespace MicroEdge.Igam.Data
 
 				return Read(command);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new SystemException(String.Format("Error occurred while reading row {0} [{1}].", TableName, key.ToString()), e);
+				throw new SystemException(string.Format("Error occurred while reading row {0} [{1}].", TableName, key.ToString()), e);
 			}
 		}
 
@@ -950,7 +881,7 @@ namespace MicroEdge.Igam.Data
 		/// <returns>
 		/// ReturnStatus.Success or ReturnStatus.NotFound.
 		/// </returns>
-		public virtual ReturnStatus Read(K key, params string[] columns)
+		public virtual ReturnStatus Read(TK key, params string[] columns)
 		{
 			if (columns == null || columns.Length == 0)
 				return Read(key);
@@ -970,7 +901,7 @@ namespace MicroEdge.Igam.Data
 					sb.Append(", ").Append(SqlTools.EscapeName(columns[i]));
 				}
 
-				string sql = String.Format("{0} from {1} Where {2} = {3}", sb, SqlTools.EscapeName(TableName),
+				string sql = string.Format("{0} from {1} Where {2} = {3}", sb, SqlTools.EscapeName(TableName),
 					SqlTools.EscapeName(keyColumn.ColumnName), SqlTools.GetSqlParamName(keyColumn.ColumnName));
 
 				IDbCommand command = SqlTools.GetCommand(sql);
@@ -978,9 +909,9 @@ namespace MicroEdge.Igam.Data
 
 				return Read(command);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new SystemException(String.Format("Error occurred while reading row {0} [{1}].", TableName, key.ToString()), e);
+				throw new SystemException(string.Format("Error occurred while reading row {0} [{1}].", TableName, key.ToString()), e);
 			}
 		}
 
@@ -991,23 +922,23 @@ namespace MicroEdge.Igam.Data
 		/// <param name="key">
 		/// This is the single key of the row to delete.
 		/// </param>
-		public virtual void Delete(K key)
+		public virtual void Delete(TK key)
 		{
 			try
 			{
 				//Create a command to delete the row using the primary key.
 				DataColumn keyColumn = GetKeyColumns()[0];
 
-				string sql = String.Format("Delete from {0} Where {1} = {2}", SqlTools.EscapeName(TableName), SqlTools.EscapeName(keyColumn.ColumnName), SqlTools.GetSqlParamName(keyColumn.ColumnName));
+				string sql = string.Format("Delete from {0} Where {1} = {2}", SqlTools.EscapeName(TableName), SqlTools.EscapeName(keyColumn.ColumnName), SqlTools.GetSqlParamName(keyColumn.ColumnName));
 
 				IDbCommand command = SqlTools.GetCommand(sql);
 				command.Parameters.Add(SqlTools.GetDataParameter(keyColumn.ColumnName, keyColumn.DataType, key, keyColumn.MaxLength));
 
 				Data.ExecuteCommand(command);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new SystemException(String.Format("Error occurred while deleting row {0} [{1}].", TableName, key.ToString()), e);
+				throw new SystemException(string.Format("Error occurred while deleting row {0} [{1}].", TableName, key.ToString()), e);
 			}
 		}
 
@@ -1028,13 +959,13 @@ namespace MicroEdge.Igam.Data
 		/// <returns>
 		/// Key value.
 		/// </returns>
-		new public K GetKeyValue()
+		new public TK GetKeyValue()
 		{
 			//For those rare cases where we are still using a short/Int16 key, need to do an explicit convert
 			object key = base.GetKeyValue();
-			if (typeof(K) == typeof(short))
+			if (typeof(TK) == typeof(short))
 				key = Convert.ToInt16(key);
-			return (K)key;
+			return (TK)key;
 		}
 
 		#endregion Methods
@@ -1049,7 +980,7 @@ namespace MicroEdge.Igam.Data
 	///  Created:   08/07/2006
 	/// </remarks>
 	[Serializable]
-	public class Row<K1, K2> : Row
+	public class Row<TK1, TK2> : Row
 	{
 		#region Constructors
 
@@ -1076,14 +1007,14 @@ namespace MicroEdge.Igam.Data
 		/// <returns>
 		/// ReturnStatus.Success or ReturnStatus.NotFound.
 		/// </returns>
-		public ReturnStatus Read(K1 key1, K2 key2)
+		public ReturnStatus Read(TK1 key1, TK2 key2)
 		{
 			try
 			{
 				//Create a command to read the row using the two part key.
 				DataColumn[] keyColumns = GetKeyColumns();
 
-				string sql = String.Format("Select * from {0} Where {1} = {2} And {3} = {4}", SqlTools.EscapeName(TableName),
+				string sql = string.Format("Select * from {0} Where {1} = {2} And {3} = {4}", SqlTools.EscapeName(TableName),
 					SqlTools.EscapeName(keyColumns[0].ColumnName), SqlTools.GetSqlParamName(keyColumns[0].ColumnName),
 					SqlTools.EscapeName(keyColumns[1].ColumnName), SqlTools.GetSqlParamName(keyColumns[1].ColumnName));
 
@@ -1093,9 +1024,9 @@ namespace MicroEdge.Igam.Data
 
 				return Read(command);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new SystemException(String.Format("Error occurred while reading row {0} [{1}/{2}].", TableName, key1.ToString(), key2.ToString()), e);
+				throw new SystemException(string.Format("Error occurred while reading row {0} [{1}/{2}].", TableName, key1.ToString(), key2.ToString()), e);
 			}
 		}
 
@@ -1114,7 +1045,7 @@ namespace MicroEdge.Igam.Data
 		/// <returns>
 		/// ReturnStatus.Success or ReturnStatus.NotFound.
 		/// </returns>
-		public ReturnStatus Read(K1 key1, K2 key2, params string[] columns)
+		public ReturnStatus Read(TK1 key1, TK2 key2, params string[] columns)
 		{
 			try
 			{
@@ -1131,7 +1062,7 @@ namespace MicroEdge.Igam.Data
 					sb.Append(", ").Append(SqlTools.EscapeName(columns[i]));
 				}
 
-				string sql = String.Format("{0} from {1} Where {2} = {3} And {4} = {5}", sb, SqlTools.EscapeName(TableName),
+				string sql = string.Format("{0} from {1} Where {2} = {3} And {4} = {5}", sb, SqlTools.EscapeName(TableName),
 					SqlTools.EscapeName(keyColumns[0].ColumnName), SqlTools.GetSqlParamName(keyColumns[0].ColumnName),
 					SqlTools.EscapeName(keyColumns[1].ColumnName), SqlTools.GetSqlParamName(keyColumns[1].ColumnName));
 
@@ -1141,9 +1072,9 @@ namespace MicroEdge.Igam.Data
 
 				return Read(command);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new SystemException(String.Format("Error occurred while reading row {0} [{1}/{2}].", TableName, key1.ToString(), key2.ToString()), e);
+				throw new SystemException(string.Format("Error occurred while reading row {0} [{1}/{2}].", TableName, key1.ToString(), key2.ToString()), e);
 			}
 		}
 
@@ -1157,14 +1088,14 @@ namespace MicroEdge.Igam.Data
 		/// <param name="key2">
 		/// This is the second part of the two part key of the row to delete.
 		/// </param>
-		public void Delete(K1 key1, K2 key2)
+		public void Delete(TK1 key1, TK2 key2)
 		{
 			try
 			{
 				//Create a command to delete the row using the primary key.
 				DataColumn[] keyColumns = GetKeyColumns();
 
-				string sql = String.Format("Delete from {0} Where {1} = {2} And {3} = {4}", SqlTools.EscapeName(TableName),
+				string sql = string.Format("Delete from {0} Where {1} = {2} And {3} = {4}", SqlTools.EscapeName(TableName),
 					SqlTools.EscapeName(keyColumns[0].ColumnName), SqlTools.GetSqlParamName(keyColumns[0].ColumnName),
 					SqlTools.EscapeName(keyColumns[1].ColumnName), SqlTools.GetSqlParamName(keyColumns[1].ColumnName));
 
@@ -1174,9 +1105,9 @@ namespace MicroEdge.Igam.Data
 
 				Data.ExecuteCommand(command);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new SystemException(String.Format("Error occurred while deleting row {0} [{1}/{2}].", TableName, key1, key2), e);
+				throw new SystemException(string.Format("Error occurred while deleting row {0} [{1}/{2}].", TableName, key1, key2), e);
 			}
 		}
 

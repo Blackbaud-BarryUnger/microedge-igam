@@ -218,7 +218,7 @@ namespace MicroEdge.Igam.Data
             else if (type == typeof(Int16) && value is bool)
             {
                 //we actually use an integer field for boolean values on SQL server
-                value = Tools.ToBoolean(value) ? -1 : 0;
+                value = Tools.Tools.ToBoolean(value) ? -1 : 0;
             }
 
             SqlParameter param = new SqlParameter(GetSqlParamName(name), ToSqlDbType(type, size));

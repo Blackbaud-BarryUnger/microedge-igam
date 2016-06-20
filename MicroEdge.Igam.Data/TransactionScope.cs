@@ -3,6 +3,7 @@ using System.Data;
 using System.Threading;
 using System.Transactions;
 using MicroEdge.Igam.Providers.Dal;
+using IsolationLevel = System.Transactions.IsolationLevel;
 
 namespace MicroEdge.Igam.Data
 {
@@ -17,20 +18,8 @@ namespace MicroEdge.Igam.Data
 	{
 		#region Fields
 
-		// The connection string used to access the database in the transaction.
-		private string _connectionString;
-
-		// The database connection participating in the transaction.
-		private IDbConnection _connection;
-
-		// The TransactionScope object participating in the transaction. This is used for all but Access.
-		private System.Transactions.TransactionScope _scope;
-
-		//The IDbTransaction object participating in the transaction. This is used only for Access.
-		private IDbTransaction _transaction;
-
-		//Value indicating if the current transaction is nested.
-		private bool _isNested;
+        //Value indicating if the current transaction is nested.
+		private readonly bool _isNested;
 
 		#endregion Fields
 
@@ -52,23 +41,26 @@ namespace MicroEdge.Igam.Data
 		{
 			//Only use TransactionScope if not Access.
 			if (isolationLevel == null)
-				_scope = new System.Transactions.TransactionScope(option);
+				Scope = new System.Transactions.TransactionScope(option);
 			else
 			{
-				_scope = new System.Transactions.TransactionScope(option, new TransactionOptions { IsolationLevel = Tools.ToEnum<System.Transactions.IsolationLevel>(isolationLevel) });
+				Scope = new System.Transactions.TransactionScope(option, new TransactionOptions
+				{
+				    IsolationLevel = Tools.Tools.ToEnum(isolationLevel.Value, IsolationLevel.Serializable)
+				});
 			}
 
 			if (Current == null || Current.ConnectionString != data.ConnectionString)
 			{
 				//Either this is the first connection or the default connection has changed. Create a new connection and store it in global thread storage.
-				_connection = data.GetConnection();
-				_connection.Open();
-				_connectionString = data.ConnectionString;
+				Connection = data.GetConnection();
+				Connection.Open();
+				ConnectionString = data.ConnectionString;
 				Thread.SetData(Thread.GetNamedDataSlot("TransactionScope"), this);
 			}
 			else
 			{
-				_connection = Current.Connection;
+				Connection = Current.Connection;
 				_isNested = true;
 			}
 		}
@@ -92,36 +84,24 @@ namespace MicroEdge.Igam.Data
 		/// <summary>
 		/// Gets the IDbConnection used by this transaction.
 		/// </summary>
-		public IDbConnection Connection
-		{
-			get { return _connection; }
-		}
+		public IDbConnection Connection { get; }
 
-		/// <summary>
+	    /// <summary>
 		/// Gets the connection string used to access the database in the transaction.
 		/// </summary>
-		public string ConnectionString
-		{
-			get { return _connectionString; }
-		}
+		public string ConnectionString { get; }
 
-		/// <summary>
+	    /// <summary>
 		/// The underlying System TransactionScope object. This is only defined if not Access.
 		/// </summary>
-		public System.Transactions.TransactionScope Scope
-		{
-			get { return _scope; }
-		}
+		public System.Transactions.TransactionScope Scope { get; }
 
-		/// <summary>
+	    /// <summary>
 		/// The underlying IDbTransaction object. This is only defined if Access.
 		/// </summary>
-		public IDbTransaction Transaction
-		{
-			get { return _transaction; }
-		}
+		public IDbTransaction Transaction { get; private set; }
 
-		/// <summary>
+	    /// <summary>
 		/// Gets the current transaction associated with the current thread of execution.
 		/// </summary>
 		public static TransactionScope Current
@@ -138,9 +118,9 @@ namespace MicroEdge.Igam.Data
 		/// </summary>
 		public void Complete()
 		{
-			_transaction.Commit();
-			_transaction.Dispose();
-			_transaction = null;
+			Transaction.Commit();
+			Transaction.Dispose();
+			Transaction = null;
 		}
 
 		/// <summary>
@@ -174,12 +154,12 @@ namespace MicroEdge.Igam.Data
 		    if (!disposing)
                 return;
 
-		    _scope.Dispose();
+		    Scope.Dispose();
 
 		    if (_isNested)
                 return;
 
-		    _connection.Dispose();
+		    Connection.Dispose();
 		    Thread.SetData(Thread.GetNamedDataSlot("TransactionScope"), null);
 		}
 

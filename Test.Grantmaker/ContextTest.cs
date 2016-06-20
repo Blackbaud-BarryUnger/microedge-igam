@@ -1,7 +1,8 @@
-﻿using FluentAssertions;
-using MicroEdge;
+﻿using System;
+using FluentAssertions;
 using MicroEdge.Grantmaker;
 using MicroEdge.Grantmaker.Business;
+using MicroEdge.Grantmaker.Properties;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Test.Igam.Common;
 
@@ -18,7 +19,7 @@ namespace Test.Grantmaker
         public void CreateApplicantMissingEmailPasswordTest()
         {
             string errorKey = string.Concat("CreateApplicant_", CreateApplicantResult.ErrorCodes.MissingEmailOrPassword);
-            string expected = MicroEdge.Grantmaker.Properties.Errors.ResourceManager.GetString(errorKey);
+            string expected = Errors.ResourceManager.GetString(errorKey);
             expected.Should().NotBeNullOrEmpty();
 
             Payload input = new Payload {CommandType = Payload.CommandTypes.CreateApplicant};
@@ -38,7 +39,7 @@ namespace Test.Grantmaker
         public void CreateApplicantInvalidEmailTest()
         {
             string errorKey = string.Concat("CreateApplicant_", CreateApplicantResult.ErrorCodes.InvalidEmail);
-            string expected = MicroEdge.Grantmaker.Properties.Errors.ResourceManager.GetString(errorKey);
+            string expected = Errors.ResourceManager.GetString(errorKey);
             expected.Should().NotBeNullOrEmpty();
 
             Payload input = new Payload { CommandType = Payload.CommandTypes.CreateApplicant };
@@ -65,7 +66,7 @@ namespace Test.Grantmaker
 
             Payload target = Context.CreateApplicant(input);
             target.CommandType.Should().Be(Payload.CommandTypes.CreateApplicantSuccess);
-            Tools.ToInt32(target[Payload.ParameterKeys.ApplicantId]).Should().BeGreaterThan(0);
+            Convert.ToInt32(target[Payload.ParameterKeys.ApplicantId]).Should().BeGreaterThan(0);
         }
 
     }

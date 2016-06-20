@@ -1,5 +1,6 @@
 ﻿using MicroEdge.Igam.Business;
 using MicroEdge.Igam.Providers.Logging;
+using MicroEdge.Igam.Tools;
 using Newtonsoft.Json;
 
 namespace MicroEdge.Grantmaker.Business
@@ -23,7 +24,7 @@ namespace MicroEdge.Grantmaker.Business
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                 result.ErrorCode = CreateApplicantResult.ErrorCodes.MissingEmailOrPassword;
-            else if (!EmailSyntaxValidator.Valid(email, false))
+            else if (!email.IsValidEmailAddress())
                 result.ErrorCode = CreateApplicantResult.ErrorCodes.InvalidEmail;
             else
             {
